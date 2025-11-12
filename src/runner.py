@@ -1,6 +1,3 @@
-
-
-
 def create_runner(x: int = 0, y: int = 0, orientation: str = "N"):
     runner = {
         "x": x,
@@ -9,14 +6,18 @@ def create_runner(x: int = 0, y: int = 0, orientation: str = "N"):
     }
     return runner
 
+
 def get_x(runner: dict):
     return runner["x"]
+
 
 def get_y(runner: dict):
     return runner["y"]
 
+
 def get_orientation(runner):
     return runner["orientation"]
+
 
 def turn(runner: dict, direction: str):
     directions = ["N", "E", "S", "W"]
@@ -34,6 +35,7 @@ def turn(runner: dict, direction: str):
 
     runner["orientation"] = directions[i]
     return runner
+
 
 def forward(runner: dict):
     if runner["orientation"] == "N":
