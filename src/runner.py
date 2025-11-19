@@ -48,3 +48,38 @@ def forward(runner: dict):
         runner["x"] -= 1
 
     return runner
+
+
+def sense_walls(runner, maze) -> tuple[bool, bool, bool]:
+    front = False
+    left = False
+    right = False
+
+    if runner["orientation"] == "N":
+        if (get_x(runner), get_y(runner) + 1) in maze["horizontal walls"]:
+            front = True
+        if (get_x(runner), get_y(runner)) in maze["vertical walls"]:
+            left = True
+        if (get_x(runner) + 1, get_y(runner)) in maze["vertical walls"]:
+            right = True
+    elif runner["orientation"] == "S":
+        if (get_x(runner), get_y(runner)) in maze["horizontal walls"]:
+            front = True
+        if (get_x(runner), get_y(runner)) in maze["vertical walls"]:
+            right = True
+        if (get_x(runner) + 1, get_y(runner)) in maze["vertical walls"]:
+            left = True
+    elif runner["orientation"] == "E":
+        if (get_x(runner), get_y(runner)) in maze["horizontal walls"]:
+            right = True
+        if (get_x(runner), get_y(runner) + 1) in maze["horizontal walls"]:
+            left = True
+        if (get_x(runner) + 1, get_y(runner)) in maze["vertical walls"]:
+            front = True
+    elif runner["orientation"] == "W":
+        if (get_x(runner), get_y(runner)) in maze["horizontal walls"]:
+            left = True
+        if (get_x(runner), get_y(runner) + 1) in maze["horizontal walls"]:
+            right = True
+        if (get_x(runner), get_y(runner)) in maze["vertical walls"]:
+            front = True
