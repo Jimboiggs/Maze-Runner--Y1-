@@ -89,9 +89,31 @@ def sense_walls(runner, maze) -> tuple[bool, bool, bool]:
     return left, front, right
 
 
-def go_straight(runner: dict, maze: dict):
+def go_straight(runner: dict, maze: dict) -> dict:
     if sense_walls(runner, maze)[1]:
         raise ValueError("Cannot go straight, there is a wall")
     else:
         forward(runner)
     return runner
+
+
+def move(runner: dict, maze: dict):
+    actions = ""
+    if not sense_walls(runner, maze)[0]:
+        turn(runner, "Left")
+        go_straight(runner, maze)
+        actions += "LF"
+    elif not sense_walls(runner, maze)[1]:
+        go_straight(runner, maze)
+        actions += "F"
+    elif not sense_walls(runner, maze)[2]:
+        turn(runner, "Right")
+        go_straight(runner, maze)
+        actions += "RF"
+    else:
+        turn(runner, "Left")
+        turn(runner, "Left")
+        go_straight(runner, maze)
+        actions += "BF"
+
+    return runner, actions
