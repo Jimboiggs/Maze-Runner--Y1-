@@ -1,3 +1,6 @@
+import maze
+
+
 def create_runner(x: int = 0, y: int = 0, orientation: str = "N"):
     runner = {
         "x": x,
@@ -84,3 +87,11 @@ def sense_walls(runner, maze) -> tuple[bool, bool, bool]:
         if (get_x(runner), get_y(runner)) in maze["vertical walls"]:
             front = True
     return left, front, right
+
+
+def go_straight(runner: dict, maze: dict):
+    if sense_walls(runner, maze)[1]:
+        raise ValueError("Cannot go straight, there is a wall")
+    else:
+        forward(runner)
+    return runner
