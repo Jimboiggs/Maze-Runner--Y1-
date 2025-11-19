@@ -83,3 +83,4 @@ def sense_walls(runner, maze) -> tuple[bool, bool, bool]:
             right = True
         if (get_x(runner), get_y(runner)) in maze["vertical walls"]:
             front = True
+    return left, front, right
