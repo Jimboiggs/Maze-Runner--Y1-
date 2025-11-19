@@ -1,4 +1,5 @@
 import maze
+from typing import Optional
 
 
 def create_runner(x: int = 0, y: int = 0, orientation: str = "N"):
@@ -98,22 +99,39 @@ def go_straight(runner: dict, maze: dict) -> dict:
 
 
 def move(runner: dict, maze: dict):
-    actions = ""
     if not sense_walls(runner, maze)[0]:
         turn(runner, "Left")
         go_straight(runner, maze)
-        actions += "LF"
+        action = "LF"
     elif not sense_walls(runner, maze)[1]:
         go_straight(runner, maze)
-        actions += "F"
+        action = "F"
     elif not sense_walls(runner, maze)[2]:
         turn(runner, "Right")
         go_straight(runner, maze)
-        actions += "RF"
+        action = "RF"
     else:
         turn(runner, "Left")
         turn(runner, "Left")
         go_straight(runner, maze)
-        actions += "BF"
+        action = "BF"
 
-    return runner, actions
+    return runner, action
+
+
+def explore(
+    runner, maze, goal: Optional[tuple[int, int]]
+) -> list[tuple[int, int, str]]:
+    solved = False
+    player_action = ""
+    returnList = []
+
+    if goal is None:
+        goal = (maze["width"] - 1, maze["height"] - 1)
+
+    while not solved:
+        runner, player_action = move(runner, maze)
+        returnList.append((runner["x"], runner["y"], player_action))
+        if runner["x"] == goal[0] and runner["y"] == goal[1]:
+            solved = True
+    return returnList
