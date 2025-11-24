@@ -31,19 +31,26 @@ def shortest_path(
 def maze_reader(maze_file: str) -> dict:
     try:
         with open(maze_file) as f:
-            height = 0
+            lines = 0
             width = 0
+            allowed = {"#", ".", "\n"}
             first = f.readline().rstrip()
             for line in f:
-                height += 1
+                for ch in line:
+                    if ch not in allowed:
+                        raise ValueError("File must contain only '.' '#'")
+                lines += 1
                 width = len(line)
                 last = line
+            height = lines // 2
 
             # Check outer walls
             last = last.rstrip()
             for j in range(len(last)):
                 if first[j] != "#" or last[j] != "#":
                     raise ValueError("Maze must be enclosed with walls")
+                elif len(line) != width:
+                    raise ValueError("Maze must be rectangular")
             for k in f:
                 if k[0] != "#" or k[-1] != "#":
                     raise ValueError("Maze must be enclosed with walls")
@@ -54,5 +61,5 @@ def maze_reader(maze_file: str) -> dict:
             }
             return maze
 
-    except:
+    except Exception as e:
         raise IOError("Error reading maze file")
