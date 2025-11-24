@@ -2,6 +2,7 @@ from typing import Optional
 
 from runner import explore
 from runner import create_runner
+from maze import create_maze
 
 
 def shortest_path(
@@ -33,6 +34,8 @@ def maze_reader(maze_file: str) -> dict:
         with open(maze_file) as f:
             lines = 0
             width = 0
+
+            # Checks
             allowed = {"#", ".", "\n"}
             first = f.readline().rstrip()
             for line in f:
@@ -44,6 +47,9 @@ def maze_reader(maze_file: str) -> dict:
                 last = line
             height = lines // 2
 
+            # Initialise maze
+            maze = create_maze(width, height)
+
             # Check outer walls
             last = last.rstrip()
             for j in range(len(last)):
@@ -51,14 +57,27 @@ def maze_reader(maze_file: str) -> dict:
                     raise ValueError("Maze must be enclosed with walls")
                 elif len(line) != width:
                     raise ValueError("Maze must be rectangular")
+            f.seek(0)
             for k in f:
                 if k[0] != "#" or k[-1] != "#":
                     raise ValueError("Maze must be enclosed with walls")
 
-            maze = {
-                "height": height,
-                "width": width,
-            }
+            # Actual wall logic
+            f.seek(0)
+            y = 0
+            for line in f:
+                line = line.rstrip("\n")
+                x = 0
+                while x < len(line):
+                    ch = line[x]
+                    if ch == "#":
+                        if y % 2 == 0:
+                            maze["horizontal walls"].append((x, y))
+                        elif x % 2 == 0:
+                            maze["vertical walls"].append((x, y))
+                    x += 1
+                y += 1
+
             return maze
 
     except Exception as e:
