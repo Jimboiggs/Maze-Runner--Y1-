@@ -1,4 +1,5 @@
 from typing import Optional
+import argparse
 
 from runner import explore
 from runner import create_runner
@@ -82,3 +83,38 @@ def maze_reader(maze_file: str) -> dict:
 
     except Exception as e:
         raise IOError("Error reading maze file")
+
+
+import argparse
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="ECS Maze Runner")
+    parser.add_argument("maze", help="The name of the maze file, e.g., maze1.mz")
+    parser.add_argument("--starting", help="The starting position, e.g., 2, 1")
+    parser.add_argument("--goal", help="The goal position, e.g., 4, 5")
+    args = parser.parse_args()
+
+    # Inline parsing of positions
+    if args.starting:
+        try:
+            starting = tuple(map(int, args.starting.replace(" ", "").split(",")))
+        except Exception:
+            raise ValueError(
+                f"Invalid starting position format: {args.starting}. Expected 'x, y'."
+            )
+    else:
+        starting = None
+
+    if args.goal:
+        try:
+            goal = tuple(map(int, args.goal.replace(" ", "").split(",")))
+        except Exception:
+            raise ValueError(
+                f"Invalid goal position format: {args.goal}. Expected 'x, y'."
+            )
+    else:
+        goal = None
+
+    print(f"Maze file: {args.maze}")
+    print(f"Starting position: {starting}")
+    print(f"Goal position: {goal}")
