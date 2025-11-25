@@ -1,4 +1,4 @@
-import maze
+import csv
 from typing import Optional
 
 
@@ -98,7 +98,7 @@ def go_straight(runner: dict, maze: dict) -> dict:
     return runner
 
 
-def move(runner: dict, maze: dict):
+def move(runner: dict, maze: dict, step: int = 1, log: list = []):
     if not sense_walls(runner, maze)[0]:
         turn(runner, "Left")
         go_straight(runner, maze)
@@ -116,7 +116,12 @@ def move(runner: dict, maze: dict):
         go_straight(runner, maze)
         action = "BF"
 
-    return runner, action
+    # .csv log
+    if log == []:
+        log.append(["Step", "x-coordinate", "y-coordinate", "Actions"])
+    log.append([step, get_x(runner), get_y(runner), action])
+
+    return runner, action, step, log
 
 
 def explore(
@@ -129,9 +134,18 @@ def explore(
     if goal is None:
         goal = (maze["width"] - 1, maze["height"] - 1)
 
+    step = 0
+    log = []
     while not solved:
-        runner, player_action = move(runner, maze)
+        step += 1
+        runner, player_action, step, log = move(runner, maze, step, log)
         returnList.append((runner["x"], runner["y"], player_action))
         if runner["x"] == goal[0] and runner["y"] == goal[1]:
             solved = True
+
+    # log to .csv file
+    with open("exploration.csv", mode="w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerows(log)
+
     return returnList
