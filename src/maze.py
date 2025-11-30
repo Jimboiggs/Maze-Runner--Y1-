@@ -25,7 +25,7 @@ def add_horizontal_wall(maze, x_coordinate, horizontal_line) -> dict:
 
 
 def add_vertical_wall(maze, y_coordinate, vertical_line) -> dict:
-    maze["vertical walls"].append(vertical_line, y_coordinate)
+    maze["vertical walls"].append((vertical_line, y_coordinate))
     return maze
 
 

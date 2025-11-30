@@ -1,6 +1,6 @@
 import csv
 from typing import Optional
-from maze_runner import inputFile, shortest_path
+from maze_runner import inputFile
 
 
 def create_runner(x: int = 0, y: int = 0, orientation: str = "N"):
@@ -144,7 +144,7 @@ def explore(
         if runner["x"] == goal[0] and runner["y"] == goal[1]:
             solved = True
 
-    shortestPath = shortest_path(maze, goal=goal)
+    # shortestPath = shortest_path(maze, goal=goal)
 
     # log to .csv file
     with open("exploration.csv", mode="w", newline="") as file:
@@ -153,8 +153,8 @@ def explore(
 
     # .txt file support
     with open("statistics.txt", "w") as statsFile:
-        statsFile.write("Input file: " + str(inputFile))
-        score = step / (4 + len(shortestPath) + "\n")
+        statsFile.write("Input file: " + str(inputFile) + "\n")
+        score = step / (4 + len(shortestPath))
         statsFile.write("Score: " + str(score) + "\n")
         statsFile.write("Number of steps: " + str(step) + "\n")
         statsFile.write("Shortest path: " + str(shortestPath) + "\n")
