@@ -1,7 +1,9 @@
 def create_maze(width: int = 5, height: int = 5) -> dict:
+    # Using a dictionary to store different aspects of the maze
     maze = {
         "width": width,
         "height": height,
+        # Lists for walls (each element is a tuple of x and y coordinates)
         "vertical walls": [],
         "horizontal walls": [],
     }

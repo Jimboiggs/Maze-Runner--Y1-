@@ -1,6 +1,7 @@
 from typing import Optional
 import argparse
 
+inputFile = None
 from runner import explore
 from runner import create_runner
 from maze import create_maze
@@ -31,6 +32,8 @@ def shortest_path(
 
 
 def maze_reader(maze_file: str) -> dict:
+    global inputFile
+    inputFile = maze_file
     try:
         with open(maze_file) as f:
             lines = 0
@@ -84,8 +87,6 @@ def maze_reader(maze_file: str) -> dict:
     except Exception as e:
         raise IOError("Error reading maze file")
 
-
-import argparse
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="ECS Maze Runner")
