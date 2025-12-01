@@ -42,6 +42,10 @@ def maze_reader(maze_file: str) -> dict:
             # Checks
             allowed = {"#", ".", "\n"}
             first = f.readline().rstrip()
+
+            while len(first) < 3:
+                first = f.readline().rstrip()
+
             for line in f:
                 for ch in line:
                     if ch not in allowed:
@@ -55,16 +59,16 @@ def maze_reader(maze_file: str) -> dict:
             maze = create_maze(width, height)
 
             # Check outer walls
-            last = last.rstrip()
-            for j in range(len(last)):
-                if first[j] != "#" or last[j] != "#":
-                    raise ValueError("Maze must be enclosed with walls")
-                elif len(line) != width:
-                    raise ValueError("Maze must be rectangular")
+            #last = last.rstrip()
+            #for j in range(len(last)):
+                #if first[j] != "#" or last[j] != "#":
+                    #raise ValueError("Maze must be enclosed with walls")
+                #elif len(line) != width:
+                    #raise ValueError("Maze must be rectangular")
             f.seek(0)
-            for k in f:
-                if k[0] != "#" or k[-1] != "#":
-                    raise ValueError("Maze must be enclosed with walls")
+            #for k in f:
+                #if k[0] != "#" or k[-1] != "#":
+                    #raise ValueError("Maze must be enclosed with walls")
 
             # Actual wall logic
             f.seek(0)
