@@ -1,6 +1,7 @@
 import csv
 from typing import Optional
-from maze_runner import inputFile
+
+# from maze_runner import inputFile
 
 
 def create_runner(x: int = 0, y: int = 0, orientation: str = "N"):
@@ -152,12 +153,12 @@ def explore(
         writer.writerows(log)
 
     # .txt file support
-    with open("statistics.txt", "w") as statsFile:
-        statsFile.write("Input file: " + str(inputFile) + "\n")
-        score = step / (4 + len(shortestPath))
-        statsFile.write("Score: " + str(score) + "\n")
-        statsFile.write("Number of steps: " + str(step) + "\n")
-        statsFile.write("Shortest path: " + str(shortestPath) + "\n")
-        statsFile.write("Length of shortest path: " + str(len(shortestPath)) + "\n")
+    # with open("statistics.txt", "w") as statsFile:
+    # statsFile.write("Input file: " + str(inputFile) + "\n")
+    # score = step / (4 + len(shortestPath))
+    # statsFile.write("Score: " + str(score) + "\n")
+    # statsFile.write("Number of steps: " + str(step) + "\n")
+    # statsFile.write("Shortest path: " + str(shortestPath) + "\n")
+    # statsFile.write("Length of shortest path: " + str(len(shortestPath)) + "\n")
 
     return returnList

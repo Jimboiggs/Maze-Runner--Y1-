@@ -116,6 +116,21 @@ if __name__ == "__main__":
     else:
         goal = None
 
+    maze = maze_reader(args.maze)
+    runner = create_runner(starting[0], starting[1])
+
+    exploration = explore(runner, maze, goal)
+    shortest = shortest_path(maze, starting, goal)
+
+    # .txt file support
+    with open("statistics.txt", "w") as statsFile:
+        statsFile.write("Input file: " + str(inputFile) + "\n")
+        score = len(exploration) / (4 + len(shortest))
+        statsFile.write("Score: " + str(score) + "\n")
+        statsFile.write("Number of steps: " + str(len(exploration)) + "\n")
+        statsFile.write("Shortest path: " + str(shortest) + "\n")
+        statsFile.write("Length of shortest path: " + str(len(shortest)) + "\n")
+
     print(f"Maze file: {args.maze}")
     print(f"Starting position: {starting}")
     print(f"Goal position: {goal}")
