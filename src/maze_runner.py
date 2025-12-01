@@ -158,6 +158,7 @@ if __name__ == "__main__":
         runner = create_runner(starting[0], starting[1])
 
     maze = maze_reader(args.maze)
+    starting = starting or (0, 1)
     goal = maze.get("goal", goal)
 
     exploration = explore(runner, maze, goal)
