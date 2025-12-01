@@ -62,14 +62,12 @@ def maze_reader(maze_file: str) -> dict:
             f.seek(0)
             raw_lines = [line.rstrip("\n") for line in f]
 
-            # Find entrance row (first inner row with a '.')
             entrance_row = None
             for y, row in enumerate(raw_lines):
                 if "." in row and not row.startswith("#.") and not row.endswith(".#"):
                     entrance_row = y
                     break
 
-            # Find exit row (last inner row with a '.')
             exit_row = None
             for y in range(len(raw_lines) - 1, -1, -1):
                 row = raw_lines[y]
@@ -80,45 +78,34 @@ def maze_reader(maze_file: str) -> dict:
             if exit_row is None:
                 raise ValueError("No exit found in maze")
 
-            # Exit position: first '.' in the exit row
             ascii_exit_x = raw_lines[exit_row].index(".")
             ascii_exit_y = exit_row
 
-            # Convert ASCII coords to logical coords
             goal_x = ascii_exit_x
             goal_y = ascii_exit_y
 
             maze["goal"] = (goal_x, goal_y)
 
             # Check outer walls
-            # --- Check outer walls using simple loops ---
-
-            # Check top wall (first row)
             for ch in raw_lines[0]:
                 if ch != "#":
                     raise ValueError("Top wall must be fully enclosed")
 
-            # Check bottom wall (last row)
             for ch in raw_lines[-1]:
                 if ch != "#":
                     raise ValueError("Bottom wall must be fully enclosed")
 
-            # Check rectangle shape and left/right walls
             expected_width = len(raw_lines[0])
 
             for idx, row in enumerate(raw_lines):
-                # Check same width
                 if len(row) != expected_width:
                     raise ValueError(f"Row {idx} is not rectangular")
 
-                # Strip newline safely
                 row = row.rstrip("\n")
 
-                # Left wall
                 if row[0] != "#":
                     raise ValueError(f"Left wall broken at row {idx}")
 
-                # Right wall
                 if row[-1] != "#":
                     raise ValueError(f"Right wall broken at row {idx}")
 
