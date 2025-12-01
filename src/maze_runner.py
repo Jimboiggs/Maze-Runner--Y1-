@@ -91,16 +91,36 @@ def maze_reader(maze_file: str) -> dict:
             maze["goal"] = (goal_x, goal_y)
 
             # Check outer walls
-            # last = last.rstrip()
-            # for j in range(len(last)):
-            # if first[j] != "#" or last[j] != "#":
-            # raise ValueError("Maze must be enclosed with walls")
-            # elif len(line) != width:
-            # raise ValueError("Maze must be rectangular")
-            # f.seek(0)
-            # for k in f:
-            # if k[0] != "#" or k[-1] != "#":
-            # raise ValueError("Maze must be enclosed with walls")
+            # --- Check outer walls using simple loops ---
+
+            # Check top wall (first row)
+            for ch in raw_lines[0]:
+                if ch != "#":
+                    raise ValueError("Top wall must be fully enclosed")
+
+            # Check bottom wall (last row)
+            for ch in raw_lines[-1]:
+                if ch != "#":
+                    raise ValueError("Bottom wall must be fully enclosed")
+
+            # Check rectangle shape and left/right walls
+            expected_width = len(raw_lines[0])
+
+            for idx, row in enumerate(raw_lines):
+                # Check same width
+                if len(row) != expected_width:
+                    raise ValueError(f"Row {idx} is not rectangular")
+
+                # Strip newline safely
+                row = row.rstrip("\n")
+
+                # Left wall
+                if row[0] != "#":
+                    raise ValueError(f"Left wall broken at row {idx}")
+
+                # Right wall
+                if row[-1] != "#":
+                    raise ValueError(f"Right wall broken at row {idx}")
 
             # Actual wall logic
             f.seek(0)
