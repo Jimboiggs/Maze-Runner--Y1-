@@ -58,17 +58,32 @@ def maze_reader(maze_file: str) -> dict:
             # Initialise maze
             maze = create_maze(width, height)
 
+            exit_x = None
+            bottom = last.rstrip("\n")
+
+            for x, ch in enumerate(bottom):
+                if ch == ".":  # an opening in the wall
+                    exit_x = x
+                    break
+
+            if exit_x is None:
+                raise ValueError("No exit found in maze")
+
+            goal_x = exit_x // 2
+            goal_y = (lines - 1) // 2  # bottom cell row
+            maze["goal"] = (goal_x, goal_y)
+
             # Check outer walls
-            #last = last.rstrip()
-            #for j in range(len(last)):
-                #if first[j] != "#" or last[j] != "#":
-                    #raise ValueError("Maze must be enclosed with walls")
-                #elif len(line) != width:
-                    #raise ValueError("Maze must be rectangular")
-            f.seek(0)
-            #for k in f:
-                #if k[0] != "#" or k[-1] != "#":
-                    #raise ValueError("Maze must be enclosed with walls")
+            # last = last.rstrip()
+            # for j in range(len(last)):
+            # if first[j] != "#" or last[j] != "#":
+            # raise ValueError("Maze must be enclosed with walls")
+            # elif len(line) != width:
+            # raise ValueError("Maze must be rectangular")
+            # f.seek(0)
+            # for k in f:
+            # if k[0] != "#" or k[-1] != "#":
+            # raise ValueError("Maze must be enclosed with walls")
 
             # Actual wall logic
             f.seek(0)

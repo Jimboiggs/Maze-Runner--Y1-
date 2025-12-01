@@ -134,7 +134,7 @@ def explore(
     returnList = []
 
     if goal is None:
-        goal = (maze["width"] - 1, maze["height"] - 1)
+        goal = maze.get("goal", (maze["width"] - 1, maze["height"] - 1))
 
     step = 0
     log = []
