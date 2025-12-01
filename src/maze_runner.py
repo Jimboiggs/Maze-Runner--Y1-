@@ -138,7 +138,6 @@ if __name__ == "__main__":
     parser.add_argument("--goal", help="The goal position, e.g., 4, 5")
     args = parser.parse_args()
 
-    # Inline parsing of positions
     if args.starting:
         try:
             starting = tuple(map(int, args.starting.replace(" ", "").split(",")))
