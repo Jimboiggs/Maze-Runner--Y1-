@@ -58,19 +58,36 @@ def maze_reader(maze_file: str) -> dict:
             # Initialise maze
             maze = create_maze(width, height)
 
-            exit_x = None
-            bottom = last.rstrip("\n")
+            # Load full file into raw_lines
+            f.seek(0)
+            raw_lines = [line.rstrip("\n") for line in f]
 
-            for x, ch in enumerate(bottom):
-                if ch == ".":  # an opening in the wall
-                    exit_x = x
+            # Find entrance row (first inner row with a '.')
+            entrance_row = None
+            for y, row in enumerate(raw_lines):
+                if "." in row and not row.startswith("#.") and not row.endswith(".#"):
+                    entrance_row = y
                     break
 
-            if exit_x is None:
+            # Find exit row (last inner row with a '.')
+            exit_row = None
+            for y in range(len(raw_lines) - 1, -1, -1):
+                row = raw_lines[y]
+                if "." in row and not row.startswith("#.") and not row.endswith(".#"):
+                    exit_row = y
+                    break
+
+            if exit_row is None:
                 raise ValueError("No exit found in maze")
 
-            goal_x = exit_x // 2
-            goal_y = (lines - 1) // 2  # bottom cell row
+            # Exit position: first '.' in the exit row
+            ascii_exit_x = raw_lines[exit_row].index(".")
+            ascii_exit_y = exit_row
+
+            # Convert ASCII coords to logical coords
+            goal_x = ascii_exit_x
+            goal_y = ascii_exit_y
+
             maze["goal"] = (goal_x, goal_y)
 
             # Check outer walls
@@ -141,6 +158,7 @@ if __name__ == "__main__":
         runner = create_runner(starting[0], starting[1])
 
     maze = maze_reader(args.maze)
+    goal = maze.get("goal", goal)
 
     exploration = explore(runner, maze, goal)
     shortest = shortest_path(maze, starting, goal)
