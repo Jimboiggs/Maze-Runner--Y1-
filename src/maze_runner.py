@@ -116,8 +116,12 @@ if __name__ == "__main__":
     else:
         goal = None
 
+    if starting is None:
+        runner = create_runner(0, 0)
+    else:
+        runner = create_runner(starting[0], starting[1])
+
     maze = maze_reader(args.maze)
-    runner = create_runner(starting[0], starting[1])
 
     exploration = explore(runner, maze, goal)
     shortest = shortest_path(maze, starting, goal)
