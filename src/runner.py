@@ -43,9 +43,9 @@ def turn(runner: dict, direction: str):
 
 def forward(runner: dict):
     if runner["orientation"] == "N":
-        runner["y"] += 1
-    elif runner["orientation"] == "S":
         runner["y"] -= 1
+    elif runner["orientation"] == "S":
+        runner["y"] += 1
     elif runner["orientation"] == "E":
         runner["x"] += 1
     elif runner["orientation"] == "W":
@@ -54,40 +54,40 @@ def forward(runner: dict):
     return runner
 
 
-def sense_walls(runner, maze) -> tuple[bool, bool, bool]:
-    front = False
-    left = False
-    right = False
+def sense_walls(runner, maze):
+    x, y = get_x(runner), get_y(runner)
+    direction = runner["orientation"]
+    grid = maze["grid"]
 
-    if runner["orientation"] == "N":
-        if (get_x(runner), get_y(runner) + 1) in maze["horizontal walls"]:
-            front = True
-        if (get_x(runner), get_y(runner)) in maze["vertical walls"]:
-            left = True
-        if (get_x(runner) + 1, get_y(runner)) in maze["vertical walls"]:
-            right = True
-    elif runner["orientation"] == "S":
-        if (get_x(runner), get_y(runner)) in maze["horizontal walls"]:
-            front = True
-        if (get_x(runner), get_y(runner)) in maze["vertical walls"]:
-            right = True
-        if (get_x(runner) + 1, get_y(runner)) in maze["vertical walls"]:
-            left = True
-    elif runner["orientation"] == "E":
-        if (get_x(runner), get_y(runner)) in maze["horizontal walls"]:
-            right = True
-        if (get_x(runner), get_y(runner) + 1) in maze["horizontal walls"]:
-            left = True
-        if (get_x(runner) + 1, get_y(runner)) in maze["vertical walls"]:
-            front = True
-    elif runner["orientation"] == "W":
-        if (get_x(runner), get_y(runner)) in maze["horizontal walls"]:
-            left = True
-        if (get_x(runner), get_y(runner) + 1) in maze["horizontal walls"]:
-            right = True
-        if (get_x(runner), get_y(runner)) in maze["vertical walls"]:
-            front = True
-    return left, front, right
+    if direction == "N":
+        front = (x, y - 1)
+        left = (x - 1, y)
+        right = (x + 1, y)
+    elif direction == "S":
+        front = (x, y + 1)
+        left = (x + 1, y)
+        right = (x - 1, y)
+    elif direction == "E":
+        front = (x + 1, y)
+        left = (x, y - 1)
+        right = (x, y + 1)
+    elif direction == "W":
+        front = (x - 1, y)
+        left = (x, y + 1)
+        right = (x, y - 1)
+
+    return (
+        is_wall(grid, left),
+        is_wall(grid, front),
+        is_wall(grid, right),
+    )
+
+
+def is_wall(grid, pos):
+    x, y = pos
+    if x < 0 or y < 0 or y >= len(grid) or x >= len(grid[0]):
+        return True
+    return grid[y][x] == "#"
 
 
 def go_straight(runner: dict, maze: dict) -> dict:
@@ -98,30 +98,60 @@ def go_straight(runner: dict, maze: dict) -> dict:
     return runner
 
 
-def move(runner: dict, maze: dict, step: int = 1, log: list = []):
-    if not sense_walls(runner, maze)[0]:
+def move(runner, maze, step, log):
+    left, front, right = sense_walls(runner, maze)
+
+    # Left-hand rule:
+    # 1. If left is open → turn left, then move forward
+    if not left:
         turn(runner, "Left")
-        go_straight(runner, maze)
-        action = "LF"
-    elif not sense_walls(runner, maze)[1]:
-        go_straight(runner, maze)
-        action = "F"
-    elif not sense_walls(runner, maze)[2]:
+        player_action = "L"
+        step += 1
+        log.append((get_x(runner), get_y(runner), player_action))
+
+        forward(runner)
+        player_action = "F"
+        step += 1
+        log.append((get_x(runner), get_y(runner), player_action))
+
+        return runner, player_action, step, log
+
+    # 2. If front is open → move forward
+    if not front:
+        forward(runner)
+        player_action = "F"
+        step += 1
+        log.append((get_x(runner), get_y(runner), player_action))
+
+        return runner, player_action, step, log
+
+    # 3. If right is open → turn right, then move forward
+    if not right:
         turn(runner, "Right")
-        go_straight(runner, maze)
-        action = "RF"
-    else:
-        turn(runner, "Left")
-        turn(runner, "Left")
-        go_straight(runner, maze)
-        action = "BF"
+        player_action = "R"
+        step += 1
+        log.append((get_x(runner), get_y(runner), player_action))
 
-    # .csv log
-    if log == []:
-        log.append(["Step", "x-coordinate", "y-coordinate", "Actions"])
-    log.append([step, get_x(runner), get_y(runner), action])
+        forward(runner)
+        player_action = "F"
+        step += 1
+        log.append((get_x(runner), get_y(runner), player_action))
 
-    return runner, action, step, log
+        return runner, player_action, step, log
+
+    # 4. Dead end → turn around (two left turns), then move forward
+    turn(runner, "Left")
+    turn(runner, "Left")
+    player_action = "B"  # Backtrack turn
+    step += 1
+    log.append((get_x(runner), get_y(runner), player_action))
+
+    forward(runner)
+    player_action = "F"
+    step += 1
+    log.append((get_x(runner), get_y(runner), player_action))
+
+    return runner, player_action, step, log
 
 
 def explore(

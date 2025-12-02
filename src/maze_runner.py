@@ -62,25 +62,44 @@ def maze_reader(maze_file: str) -> dict:
             f.seek(0)
             raw_lines = [line.rstrip("\n") for line in f]
 
-            entrance_row = None
-            for y, row in enumerate(raw_lines):
-                if "." in row and not row.startswith("#.") and not row.endswith(".#"):
-                    entrance_row = y
-                    break
+            # Build grid: 2D array of characters
+            maze["grid"] = []
 
+            for line in raw_lines:
+                row = []
+                for ch in line:
+                    row.append(ch)
+                maze["grid"].append(row)
+
+            # --- Correct exit detection for .mz format (works for all maze sizes) ---
+
+            height_raw = len(raw_lines)
+
+            # Find exit row: last inner row with at least one corridor "."
             exit_row = None
-            for y in range(len(raw_lines) - 1, -1, -1):
+            for y in range(height_raw - 2, 0, -1):  # from second-last to row 1
                 row = raw_lines[y]
-                if "." in row and not row.startswith("#.") and not row.endswith(".#"):
+                if "." in row:
                     exit_row = y
                     break
 
             if exit_row is None:
                 raise ValueError("No exit found in maze")
 
-            ascii_exit_x = raw_lines[exit_row].index(".")
+            # The exit column is the first '.' in that row
+            ascii_exit_x = None
+            row = raw_lines[exit_row]
+            for x, ch in enumerate(row):
+                if ch == ".":
+                    ascii_exit_x = x
+                    break
+
+            if ascii_exit_x is None:
+                raise ValueError("Exit row has no corridor")
+
             ascii_exit_y = exit_row
 
+            # Convert directly to logical goal cell (no scaling needed)
             goal_x = ascii_exit_x
             goal_y = ascii_exit_y
 
