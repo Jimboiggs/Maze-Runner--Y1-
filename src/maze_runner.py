@@ -71,11 +71,8 @@ def maze_reader(maze_file: str) -> dict:
                     row.append(ch)
                 maze["grid"].append(row)
 
-            # --- Correct exit detection for .mz format (works for all maze sizes) ---
-
             height_raw = len(raw_lines)
 
-            # Find exit row: last inner row with at least one corridor "."
             exit_row = None
             for y in range(height_raw - 2, 0, -1):  # from second-last to row 1
                 row = raw_lines[y]
@@ -86,7 +83,6 @@ def maze_reader(maze_file: str) -> dict:
             if exit_row is None:
                 raise ValueError("No exit found in maze")
 
-            # The exit column is the first '.' in that row
             ascii_exit_x = None
             row = raw_lines[exit_row]
             for x, ch in enumerate(row):
@@ -99,7 +95,6 @@ def maze_reader(maze_file: str) -> dict:
 
             ascii_exit_y = exit_row
 
-            # Convert directly to logical goal cell (no scaling needed)
             goal_x = ascii_exit_x
             goal_y = ascii_exit_y
 

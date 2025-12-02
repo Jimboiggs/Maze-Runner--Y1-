@@ -101,8 +101,6 @@ def go_straight(runner: dict, maze: dict) -> dict:
 def move(runner, maze, step, log):
     left, front, right = sense_walls(runner, maze)
 
-    # Left-hand rule:
-    # 1. If left is open → turn left, then move forward
     if not left:
         turn(runner, "Left")
         player_action = "L"
@@ -116,7 +114,6 @@ def move(runner, maze, step, log):
 
         return runner, player_action, step, log
 
-    # 2. If front is open → move forward
     if not front:
         forward(runner)
         player_action = "F"
@@ -125,7 +122,6 @@ def move(runner, maze, step, log):
 
         return runner, player_action, step, log
 
-    # 3. If right is open → turn right, then move forward
     if not right:
         turn(runner, "Right")
         player_action = "R"
@@ -139,7 +135,6 @@ def move(runner, maze, step, log):
 
         return runner, player_action, step, log
 
-    # 4. Dead end → turn around (two left turns), then move forward
     turn(runner, "Left")
     turn(runner, "Left")
     player_action = "B"  # Backtrack turn
