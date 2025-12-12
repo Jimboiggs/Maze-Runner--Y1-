@@ -42,6 +42,7 @@ def turn(runner: dict, direction: str):
 
 
 def forward(runner: dict):
+    # I have used an inverted coordinate system so this will break tests
     if runner["orientation"] == "N":
         runner["y"] -= 1
     elif runner["orientation"] == "S":
@@ -57,6 +58,7 @@ def forward(runner: dict):
 def sense_walls(runner, maze):
     x, y = get_x(runner), get_y(runner)
     direction = runner["orientation"]
+    # I have used a maze grid which may break tests
     grid = maze["grid"]
 
     if direction == "N":
