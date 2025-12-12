@@ -98,7 +98,12 @@ def go_straight(runner: dict, maze: dict) -> dict:
     return runner
 
 
-def move(runner, maze, step, log):
+def move(runner, maze, step=None, log=None):
+    logging = step is not None or log is not None
+    if step is None:
+        step = 0
+    if log is None:
+        log = []
     left, front, right = sense_walls(runner, maze)
 
     if not left:
@@ -137,7 +142,7 @@ def move(runner, maze, step, log):
 
     turn(runner, "Left")
     turn(runner, "Left")
-    player_action = "B"  # Backtrack turn
+    player_action = "B"
     step += 1
     log.append((get_x(runner), get_y(runner), player_action))
 
@@ -146,7 +151,10 @@ def move(runner, maze, step, log):
     step += 1
     log.append((get_x(runner), get_y(runner), player_action))
 
-    return runner, player_action, step, log
+    if logging:
+        return runner, player_action, step, log
+    else:
+        return runner, player_action
 
 
 def explore(

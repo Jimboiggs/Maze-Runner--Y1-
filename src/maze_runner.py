@@ -179,7 +179,8 @@ if __name__ == "__main__":
 
     maze = maze_reader(args.maze)
     starting = starting or (0, 1)
-    goal = maze.get("goal", goal)
+    if goal is None:
+        goal = maze.get("goal")
 
     exploration = explore(runner, maze, goal)
     shortest = shortest_path(maze, starting, goal)
