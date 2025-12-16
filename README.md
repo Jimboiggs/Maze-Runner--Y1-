@@ -9,3 +9,8 @@ python maze_runner.py ../tests/mazes/doom_maze.mz --starting 1,1 --goal 10,5
 python maze_runner.py ../tests/mazes/tiny_maze1.mz
 
 The python files can be found in the ‘src’ folder and the folder of test maze files can be found within the ‘test’ folder.
+
+Maze example:
+
+
+<img width="265" height="485" alt="Maze Example" src="https://github.com/user-attachments/assets/f2dbbf94-ee77-46c0-b0da-f7b52ca6529e" />
